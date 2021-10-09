@@ -1,0 +1,8 @@
+.admin-nav  a{
+  padding: 10px;
+  text-decoration: none;
+}
+
+.nav-active {
+    color: #000 !important;
+}
