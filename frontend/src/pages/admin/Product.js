@@ -3,6 +3,7 @@ import { Col, Container, Row, Table, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import axios from '../../axios';
 import { useState, useEffect } from 'react';
+import Pagination from "react-js-pagination";
 function Product() {
 
     const [products, setProducts] = useState([]);
@@ -64,6 +65,22 @@ function Product() {
 
                             </tbody>
                         </Table>
+                    </div>
+                    <div>
+
+                        {(meta && meta.last_page > 1) && <Pagination
+                            activePage={meta?.current_page ? meta?.current_page : 0}
+                            itemsCountPerPage={meta?.per_page ? meta?.per_page : 0}
+                            totalItemsCount={meta?.total ? meta?.total : 0}
+                            onChange={(pageNumber) => {
+                                getProduct(pageNumber)
+                            }}
+                            pageRangeDisplayed={8}
+                            itemClass="page-item"
+                            linkClass="page-link"
+                            firstPageText="First Page"
+                            lastPageText="Last Lage"
+                        />}
                     </div>
                 </Col>
             </Row>

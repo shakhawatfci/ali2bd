@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { Button, Col, Container, Form, Row, Toast } from 'react-bootstrap';
+import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import axios from '../../axios';
 import tostMessage from '../../toast/Toast';
 function AddProduct() {
-
     const [product, setProduct] = useState({
         name: '',
         image: '',
@@ -26,7 +25,6 @@ function AddProduct() {
         reader.readAsDataURL(file);
     }
 
-
     function AddProduct(e) {
         e.preventDefault();
         setLoading(true)
@@ -41,6 +39,7 @@ function AddProduct() {
                     price: '',
                     description: ''
                 });
+                setErrors({});
             })
             .catch(error => {
                 tostMessage({ icon: 'error', 'message': 'Error' });

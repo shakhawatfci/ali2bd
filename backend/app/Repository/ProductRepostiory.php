@@ -9,7 +9,7 @@ class ProductRepository
 {
     public function getProductList($data)
     {
-        $per_page = 12;
+        $per_page = 8;
         if ($data['per_page']) {
             $per_page = $data['per_page'];
         }

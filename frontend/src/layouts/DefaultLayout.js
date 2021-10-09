@@ -1,18 +1,23 @@
+import { useContext } from 'react';
 import { Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link,
-  useParams,
-  useRouteMatch
+  Redirect,
+  useRouteMatch,
+  NavLink
 } from "react-router-dom";
+import { CustomerAuthContext } from '../context/CustomerAuthContext';
+import Dashboard from '../pages/customer/Dashboard';
 import Login from '../pages/customer/Login';
 import Home from '../pages/Home';
 
 
 function DefaultLayout() {
   let { path, url } = useRouteMatch();
+  const auth = useContext(CustomerAuthContext);
   return (
     <div>
       <div className="container-fluid p-0">
@@ -22,20 +27,23 @@ function DefaultLayout() {
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link to="/">Home</Nav.Link>
-              <Nav.Link to="/cart">Cart</Nav.Link>
+            <Nav className="me-auto admin-nav">
+              <NavLink className="text-white" activeClassName="admin-nav" to={path}>Home</NavLink>
+              <NavLink className="text-white" activeClassName="admin-nav" to={`${path}/cart`} >Cart(9)</NavLink>
 
             </Nav>
             <Nav>
-              <NavDropdown title="Account" className="text-center" id="collasible-nav-dropdown" style={{ marginRight: 50 }}>
-                <Link to="/login">Login</Link>
-                <NavDropdown.Divider />
-                <Link to="/register">Register</Link>
-                <NavDropdown.Divider />
-                <Link to="/orders">My Orders</Link>
-                <NavDropdown.Divider />
-                <Link to="/profile">Profile</Link>
+              <NavDropdown title={auth && auth.customer ? auth.customer.name : 'Account'}
+                className="text-center" id="collasible-nav-dropdown" style={{ marginRight: 50 }}>
+                {!auth.customer && <Link to={`${path}/login`}>Login</Link>}
+                {!auth.customer && <NavDropdown.Divider />}
+                {!auth.customer && <Link to={`${path}/register`}>Register</Link>}
+                {!auth.customer && <NavDropdown.Divider />}
+                {(auth && auth.customer) && <Link to={`${path}/orders`} >My Orders</Link>}
+                {(auth && auth.customer) && <NavDropdown.Divider />}
+                {(auth && auth.customer) && <Link to={`${path}/profile`}>Profile</Link>}
+                {(auth && auth.customer) && <NavDropdown.Divider />}
+                {(auth && auth.customer) && <Link to={`${path}/logout`}>Logout</Link>}
               </NavDropdown>
             </Nav>
 
@@ -49,12 +57,25 @@ function DefaultLayout() {
         <Route exact path={path}>
           <Home />
         </Route>
-        <Route path={`${path}/login`}>
-          <Login />
-        </Route>
+
+        {!auth.customer ?
+          (<Route path={`${path}/login`}>
+            <Login />
+          </Route>) :
+          (<Redirect
+            to={`${path}/dashboard`}
+          />)}
+        {auth.customer ?
+          (<Route path={`${path}/dashboard`}>
+            <Dashboard />
+          </Route>) :
+          (<Redirect
+            to={`${path}/login`}
+          />)}
+
       </Switch>
 
-    </div>
+    </div >
   );
 }
 
